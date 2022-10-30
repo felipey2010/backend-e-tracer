@@ -6,7 +6,7 @@ require("dotenv").config()
 const { Client } = require("pg")
 
 //using this to define a particular directory
-const requireDir = require("require-dir")
+// const requireDir = require("require-dir")
 
 //MIDDLEWARES
 app.use(cors())
@@ -14,7 +14,7 @@ app.use(cors())
 app.use(express.json())
 
 //folder to create our models
-requireDir("./src/models")
+// requireDir("./src/models")
 app.use("/api", routes)
 
 //URL of the database
