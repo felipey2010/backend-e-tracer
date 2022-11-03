@@ -89,7 +89,9 @@ module.exports = {
         .then(async () => {
           const email = data.rows[0].email
           const payload = { email }
-          const token = jwt.sign(payload, secret, { expiresIn: "2h" })
+          const token = await jwt.sign(payload, secret, {
+            expiresIn: "2h",
+          })
 
           const person = {
             cpf: data.rows[0].cpf,
@@ -183,7 +185,7 @@ module.exports = {
     })
   },
   async logout(req, res) {
-    const { token, date_accessed } = req.body.token
+    const { token, date_accessed } = req.body
 
     if (!token) {
       return res.status(403).json({
@@ -196,7 +198,7 @@ module.exports = {
       if (err) {
         return res.status(500).json({
           success: false,
-          message: "Erro interno",
+          message: "Usuário não autenticado. Efetuar login",
           error: err,
         })
       }
@@ -216,7 +218,7 @@ module.exports = {
       if (data.rowCount > 1) {
         return res.status(500).json({
           success: false,
-          message: "Registro de e-mail duplicado",
+          message: "Usuário tem mais que um registro",
         })
       }
 
@@ -240,17 +242,16 @@ module.exports = {
         ]
 
         await pool
-          .query(queryText, [values])
-          .then(() => {
+          .query(queryText, values)
+          .then(async () => {
             return res.status(200).json({
               success: true,
-              message: "Usuário autenticado",
-              person: found_person,
+              message: "Logout efetuado com êxito",
             })
           })
           .catch(error => {
             return res.status(500).json({
-              success: true,
+              success: false,
               message: "Erro de logout",
               error: error,
             })

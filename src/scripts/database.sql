@@ -13,7 +13,7 @@ create table if not exists public.persons (
         date_registered timestamp,
         last_accessed timestamp,
         term_agreed boolean,
-    password         varchar(255),
+    password         varchar(255)
 
 );
 
