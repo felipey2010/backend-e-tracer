@@ -1,4 +1,9 @@
-CREATE DATABASE smartdash_db;
+--replace database name with production or local name
+--CREATE DATABASE smartdash_db;
+
+--Local Database
+--CREATE DATABASE smartdash_local;
+
 
 CREATE SCHEMA IF NOT EXISTS public;
 
@@ -28,3 +33,4 @@ create table if not exists public.notifications (
 
 --altering a table
 -- ALTER TABLE public.person ADD COLUMN date_registered timestamp;
+

@@ -1,0 +1,7 @@
+-Create a route for image upload
+    --if possible, upload images to Google drive (for the mean time)
+
+--Create a route to update the notification
+
+-Create a route for password recovery
+    --generate a code, store in the database, send code to user's email
