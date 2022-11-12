@@ -1,8 +1,8 @@
 const { pool, comparePasswords } = require("../../db")
-const jwt = require("jsonwebtoken")
+const { sign, verify } = require("jsonwebtoken")
+require("dotenv").config()
 
-const secret = process.env.SECRET
-
+const secret = process.env.DB_SECRET
 module.exports = {
   async prelogin(req, res) {
     const { login } = req.body
@@ -15,17 +15,16 @@ module.exports = {
     if (data.rowCount === 0) {
       return res.json({
         success: false,
-        message: "User not found",
+        message: "Nenhum usuário encontrado",
       })
     }
 
     return res.status(200).json({
       success: true,
-      message: "User found",
+      message: "Usuário encontrado",
       person: data.rows[0],
     })
   },
-
   async authenticate(req, res) {
     const { login, password, date_accessed } = req.body
 
@@ -89,7 +88,7 @@ module.exports = {
         .then(async () => {
           const email = data.rows[0].email
           const payload = { email }
-          const token = await jwt.sign(payload, secret, {
+          const token = await sign(payload, secret, {
             expiresIn: "2h",
           })
 
@@ -135,7 +134,7 @@ module.exports = {
       })
     }
 
-    jwt.verify(token, secret, async function (err, decoded) {
+    verify(token, secret, async function (err, decoded) {
       if (err) {
         return res.status(500).json({
           success: false,
@@ -194,7 +193,7 @@ module.exports = {
       })
     }
 
-    jwt.verify(token, secret, async function (err, decoded) {
+    verify(token, secret, async function (err, decoded) {
       if (err) {
         return res.status(500).json({
           success: false,
@@ -257,6 +256,14 @@ module.exports = {
             })
           })
       }
+    })
+  },
+  async send_code_to_email(req, res) {
+    const { login, email } = req.body
+
+    return res.status(200).json({
+      success: true,
+      message: data,
     })
   },
 }

@@ -17,5 +17,14 @@ create table if not exists public.persons (
 
 );
 
+--creation of table to store notifications
+create table if not exists public.notifications (
+    id serial not null constraint notification_pkey primary key,
+    message varchar(255),
+    read boolean,
+    date_created timestamp,
+    user_id integer not null constraint fk_person_id references public.persons
+);
+
 --altering a table
 -- ALTER TABLE public.person ADD COLUMN date_registered timestamp;

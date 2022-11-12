@@ -1,28 +1,30 @@
 const { pool, createHash } = require("../../db")
-const jwt = require("jsonwebtoken")
+const { verify } = require("jsonwebtoken")
+require("dotenv").config()
 
-const secret = process.env.SECRET
+const secret = process.env.DB_SECRET
 
 module.exports = {
-  async index(req, res) {
-    await pool
-      .query("SELECT * FROM public.persons;")
-      .then(result => {
-        return res.status(200).json({
-          success: true,
-          message: "Lista de pessoas",
-          data: result.rows,
-        })
-      })
-      .catch(err => {
-        console.log(err)
-        return res.json({
-          success: false,
-          message: "Erro interno - 200",
-          error: err,
-        })
-      })
-  },
+  // async index(req, res) {
+  //   //avoid sending all users' data
+  //   await pool
+  //     .query("SELECT * FROM public.persons;")
+  //     .then(result => {
+  //       return res.status(200).json({
+  //         success: true,
+  //         message: "Lista de pessoas",
+  //         data: result.rows,
+  //       })
+  //     })
+  //     .catch(err => {
+  //       console.log(err)
+  //       return res.json({
+  //         success: false,
+  //         message: "Erro interno - 200",
+  //         error: err,
+  //       })
+  //     })
+  // },
   async register(req, res) {
     const {
       cpf,
@@ -198,7 +200,7 @@ module.exports = {
   async get_user_data(req, res) {
     const { token, tipo_pessoa } = req.body
 
-    jwt.verify(token, secret, async function (err, decoded) {
+    verify(token, secret, async function (err, decoded) {
       if (err) {
         return res.json({
           success: false,
