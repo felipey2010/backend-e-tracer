@@ -1,17 +1,17 @@
 const express = require("express")
 const app = express()
 const cors = require("cors")
-const routes = require("./src/routes")
 require("dotenv").config()
+const routes = require("./src/routes")
 const { Client } = require("pg")
 
 //using this to define a particular directory
 // const requireDir = require("require-dir")
 
 //MIDDLEWARES
-app.use(cors())
 //Get JSON data from the database upon requests
 app.use(express.json())
+app.use(cors())
 
 //folder to create our models
 // requireDir("./src/models")

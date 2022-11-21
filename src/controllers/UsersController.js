@@ -5,7 +5,7 @@ require("dotenv").config()
 const secret = process.env.DB_SECRET
 
 module.exports = {
-  // async index(req, res) {
+  //async index(req, res) {
   //   //avoid sending all users' data
   //   await pool
   //     .query("SELECT * FROM public.persons;")

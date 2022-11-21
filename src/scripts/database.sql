@@ -31,6 +31,16 @@ create table if not exists public.notifications (
     user_id integer not null constraint fk_person_id references public.persons
 );
 
+--register requests for password reset
+create table if not exists public.password_reset_requests (
+    id serial not null constraint password_request_id primary key,
+    user_id integer not null constraint fk_user_id references public.persons,
+    verification_code varchar(8) not null,
+    password_reset_token varchar(255),
+    date_created timestamp not null,
+    date_verified timestamp
+);
+
 --altering a table
 -- ALTER TABLE public.person ADD COLUMN date_registered timestamp;
 
