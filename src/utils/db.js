@@ -1,9 +1,13 @@
 const Pool = require("pg").Pool
 require("dotenv").config()
 const bcrypt = require("bcrypt")
-const saltRound = process.env.SALTROUND
+const saltRound = process.env.JWT_SALTROUND
 
-const db_user = process.env.DB_USER
+const db_user =
+  process.env.DB_PRODUCTION === "true"
+    ? process.env.DB_USER_PROD
+    : process.env.DB_USER_LOCAL
+
 const db_port = process.env.DB_PORT
 
 const db_password =

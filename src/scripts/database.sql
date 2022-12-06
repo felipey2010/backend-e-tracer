@@ -1,5 +1,5 @@
 --replace database name with production or local name
---CREATE DATABASE smartdash_db;
+CREATE DATABASE smartdash_db;
 
 --Local Database
 --CREATE DATABASE smartdash_local;
@@ -39,6 +39,16 @@ create table if not exists public.password_reset_requests (
     password_reset_token varchar(255),
     date_created timestamp not null,
     date_verified timestamp
+);
+
+
+--create rooms
+create table if not exists public.rooms (
+    id serial not null constraint room_pkey primary key,
+    name varchar(50),
+    image varchar(255),
+    date_created timestamp not null,
+    user_id integer not null constraint fk_room_owner_id references public.persons
 );
 
 --altering a table

@@ -1,11 +1,13 @@
-const { pool, comparePasswords, createHash } = require("../../db")
+const { pool, comparePasswords, createHash } = require("../utils/db")
 const { sign, verify } = require("jsonwebtoken")
 const generate = require("nanoid/generate")
-const { getPasswordResetTemplate } = require("../templates/passwordReset")
+const {
+  getPasswordResetTemplate,
+} = require("../templates/PasswordReset/passwordReset")
 const { sendMail } = require("../Mailer/Mail")
 require("dotenv").config()
 
-const secret = process.env.DB_SECRET
+const secret = process.env.JWT_SECRET
 
 module.exports = {
   async prelogin(req, res) {
@@ -491,6 +493,8 @@ module.exports = {
       "email=$5, password=$6, date_registered=$7, term_agreed=$8, last_accessed=$9," +
       " cpf=$10 WHERE cpf = $11 AND id=$12"
 
+    const date_now = new Date()
+
     const values = [
       data.rows[0].id,
       data.rows[0].sex,
@@ -500,7 +504,7 @@ module.exports = {
       await createHash(new_password),
       data.rows[0].date_registered,
       data.rows[0].term_agreed,
-      new Date(),
+      date_now,
       data.rows[0].cpf,
       data.rows[0].cpf,
       data.rows[0].id,
@@ -508,18 +512,17 @@ module.exports = {
 
     await pool
       .query(queryText, values)
-      .then(result => {
-        console.log(result)
+      .then(() => {
         const person = {
-          id: result.rows[0].id,
-          cpf: result.rows[0].cpf,
-          sex: result.rows[0].sex,
-          name: result.rows[0].name,
-          birthdate: result.rows[0].birthdate,
-          email: result.rows[0].email,
-          date_registered: result.rows[0].date_registered,
-          term_agreed: result.rows[0].term_agreed,
-          last_accessed: result.rows[0].last_accessed,
+          id: data.rows[0].id,
+          cpf: data.rows[0].cpf,
+          sex: data.rows[0].sex,
+          name: data.rows[0].name,
+          birthdate: data.rows[0].birthdate,
+          email: data.rows[0].email,
+          date_registered: data.rows[0].date_registered,
+          term_agreed: data.rows[0].term_agreed,
+          last_accessed: date_now,
         }
 
         return res.status(200).json({

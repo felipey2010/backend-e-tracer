@@ -1,6 +1,5 @@
 const { Router } = require("express")
 const routes = Router()
-// const verify = require("./verifyToken");
 
 routes.get("/", (req, res) => {
   res.send("URL Base da API")
@@ -41,5 +40,11 @@ routes.post(
   "/user/notification",
   UserOperationController.createNotificationForUser
 )
+
+const RoomController = require("./controllers/RoomController")
+routes.post("/rooms", RoomController.get_rooms)
+routes.post("/rooms/create", RoomController.register)
+routes.post("/rooms/update", RoomController.update)
+routes.post("/rooms/delete", RoomController.delete)
 
 module.exports = routes

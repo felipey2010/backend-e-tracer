@@ -1,8 +1,8 @@
-const { pool, createHash } = require("../../db")
+const { pool, createHash } = require("../utils/db")
 const { verify } = require("jsonwebtoken")
 require("dotenv").config()
 
-const secret = process.env.DB_SECRET
+const secret = process.env.JWT_SECRET
 
 module.exports = {
   //async index(req, res) {
