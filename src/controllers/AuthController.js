@@ -5,7 +5,7 @@ const {
   getPasswordResetTemplate,
 } = require("../templates/PasswordReset/passwordReset")
 
-const { sendMail } = require("../Mailer/Mail")
+const { sendMail } = require("../middleware/Mailer/Mail")
 
 require("dotenv").config()
 
