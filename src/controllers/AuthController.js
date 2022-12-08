@@ -4,7 +4,9 @@ const generate = require("nanoid/generate")
 const {
   getPasswordResetTemplate,
 } = require("../templates/PasswordReset/passwordReset")
+
 const { sendMail } = require("../Mailer/Mail")
+
 require("dotenv").config()
 
 const secret = process.env.JWT_SECRET
@@ -144,6 +146,7 @@ module.exports = {
   },
   async checkToken(req, res) {
     const token = req.body.token || req.params.token
+    let error = ""
 
     if (!token) {
       return res.status(403).json({
@@ -154,52 +157,56 @@ module.exports = {
 
     verify(token, secret, async function (err, decoded) {
       if (err) {
-        return res.status(500).json({
-          success: false,
-          message: "Erro interno - 120",
-          error: err,
-        })
-      }
-
-      const data = await pool.query(
-        "SELECT * FROM public.persons WHERE email = $1",
-        [decoded.email]
-      )
-
-      if (data.rowCount === 0) {
-        return res.status(401).json({
-          success: false,
-          message: "Token inválido",
-        })
-      }
-
-      if (data.rowCount > 1) {
-        return res.status(500).json({
-          success: false,
-          message: "Registro de e-mail duplicado",
-        })
-      }
-
-      if (data.rowCount === 1) {
-        const found_person = {
-          id: data.rows[0].id,
-          cpf: data.rows[0].cpf,
-          sex: data.rows[0].sex,
-          name: data.rows[0].name,
-          birthdate: data.rows[0].birthdate,
-          email: data.rows[0].email,
-          date_registered: data.rows[0].date_registered,
-          term_agreed: data.rows[0].term_agreed,
-          last_accessed: data.rows[0].last_accessed,
-        }
-
-        return res.status(200).json({
-          success: true,
-          message: "Usuário autenticado",
-          person: found_person,
-        })
+        error = err
       }
     })
+
+    if (error) {
+      return res.status(500).json({
+        success: false,
+        message: "Erro de verificação de token",
+        error: error,
+      })
+    }
+
+    const data = await pool.query(
+      "SELECT * FROM public.persons WHERE email = $1",
+      [decoded.email]
+    )
+
+    if (data.rowCount === 0) {
+      return res.status(401).json({
+        success: false,
+        message: "Token inválido",
+      })
+    }
+
+    if (data.rowCount > 1) {
+      return res.status(500).json({
+        success: false,
+        message: "Registro de e-mail duplicado",
+      })
+    }
+
+    if (data.rowCount === 1) {
+      const found_person = {
+        id: data.rows[0].id,
+        cpf: data.rows[0].cpf,
+        sex: data.rows[0].sex,
+        name: data.rows[0].name,
+        birthdate: data.rows[0].birthdate,
+        email: data.rows[0].email,
+        date_registered: data.rows[0].date_registered,
+        term_agreed: data.rows[0].term_agreed,
+        last_accessed: data.rows[0].last_accessed,
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: "Usuário autenticado",
+        person: found_person,
+      })
+    }
   },
   async logout(req, res) {
     const { token, date_accessed } = req.body

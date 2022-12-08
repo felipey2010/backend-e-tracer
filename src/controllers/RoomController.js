@@ -7,18 +7,6 @@ const secret = process.env.JWT_SECRET
 
 module.exports = {
   async get_rooms(req, res) {
-    let error = ""
-
-    const verified = verifyToken(error)
-
-    if (!verified) {
-      return res.status(403).json({
-        success: false,
-        message: "Acesso negado!",
-        error: error,
-      })
-    }
-
     await pool
       .query("SELECT * FROM public.rooms")
       .then(result => {

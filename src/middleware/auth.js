@@ -1,24 +1,23 @@
 const { verify } = require("jsonwebtoken")
 require("dotenv").config()
 
-const verifyToken = async error => {
+const verifyToken = async req => {
   try {
-    const token = req.headers["smd-usrtkn"]
+    const token = req.headers["smd-usrtkn"] || req.body.token
 
-    if (!token) {
-      error = "Nenhum token recebido"
-      return false
+    if (!token || token === undefined) {
+      return { success: false, error: "Nenhum token recebido" }
     }
 
     const result = verify(token, process.env.JWT_SECRET)
 
+    console.log("Result: ", result)
+
     if (result) {
-      error = ""
-      return true
+      return { success: true, token: token, result: result }
     }
   } catch (err) {
-    error = err.message
-    return false
+    return { success: false, error: err.message }
   }
 }
 
